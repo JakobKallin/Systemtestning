@@ -12,72 +12,51 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-class Job {
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public boolean isFullTime() {
-        return fullTime;
-    }
-
-    public void setFullTime(boolean fullTime) {
-        this.fullTime = fullTime;
-    }
-
-    private String title;
-    private String location;
-    private boolean fullTime;
-}
+import java.util.Scanner;
 
 public class JobSearch {
     public static void main(String[] args) throws IOException, ParseException {
-        doEverything();
+        System.out.println("Welcome to JobSearch!");
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("Keyword: ");
+        String keyword = scan.nextLine();
+
+        System.out.print("Location: ");
+        String location = scan.nextLine();
+
+        List<Job> jobs = getJobs(keyword, location, new HttpImpl());
+        for (Job job : jobs) {
+            System.out.println(job.getTitle() + " (" + job.getLocation()+ ")");
+        }
     }
 
-    public static List<Job> doEverything() throws IOException, ParseException {
-        System.out.println("Welcome to JobSearch!");
-
-        String url = "https://jobs.github.com/positions.json?description=java&location=united+states&full_time=on";
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet request = new HttpGet(url);
-        CloseableHttpResponse response = client.execute(request);
+    public static List<Job> getJobs(String keyword, String location, Http http) throws IOException, ParseException {
+        String url =
+                "https://jobs.github.com/positions.json?"+
+                        "location=" + location.replace(' ', '+') +
+                        "&description=" + keyword.replace(' ', '+') +
+                        "&full_time=on";
+        String json = http.get(url);
 
         List<Job> jobs = new ArrayList<Job>();
-        try {
-            HttpEntity entity = response.getEntity();
-            String json = EntityUtils.toString(entity);
-            JSONArray arr = (JSONArray)new JSONParser().parse(json);
-            for(int i = 0; i < arr.size(); i++) {
-                JSONObject obj = (JSONObject) arr.get(i);
-                Job job = new Job();
-                job.setTitle((String) obj.get("title"));
-                if (obj.get("type").equals("Full Time")) {
-                    job.setFullTime(true);
-                }
-                else {
-                    job.setFullTime(false);
-                }
-
-                System.out.println(job.getTitle() + " (" + job.getLocation()+ ")");
-                jobs.add(job);
-                job.setLocation((String) obj.get("location"));
+        JSONArray arr = (JSONArray)new JSONParser().parse(json);
+        for(int i = 0; i < arr.size(); i++) {
+            JSONObject obj = (JSONObject) arr.get(i);
+            Job job = new Job();
+            job.setTitle((String) obj.get("title"));
+            if (!obj.containsKey("type")) {
+                job.setFullTime(true);
             }
-        } finally {
-            response.close();
+            else if (obj.get("type").equals("Full Time")) {
+                job.setFullTime(true);
+            }
+            else {
+                job.setFullTime(false);
+            }
+
+            jobs.add(job);
+            job.setLocation((String) obj.get("location"));
         }
 
         return jobs;
