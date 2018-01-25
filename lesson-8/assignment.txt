@@ -1,0 +1,6 @@
+Lägg in Lesson8.java och Lesson8Test.java i ett eget projekt, men läs inte igenom källkoden till Lesson8.java. Utgå istället från testfallen i Lesson8Test.java och gör följande:
+
+1. Lägg till en assertion som uttrycker vad det väntade resultatet är.
+2. Kom fram till den minimala indatan som fortfarande misslyckas och ändra testet (inklusive assertion) till att använda denna istället.
+
+Som valfri överkurs kan du även efter detta fixa koden i Lesson8.java så att testerna lyckas.
