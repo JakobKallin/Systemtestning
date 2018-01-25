@@ -1,0 +1,5 @@
+Hur många betydelsefulla testfall kan du komma på till följande metod?
+
+public static boolean isIsoscelesTriangle(double a, double b, double c)
+
+Metoden ska räkna ut, givet längderna på de tre sidorna i en triangel, om triangeln är likbent ("isosceles") eller inte.

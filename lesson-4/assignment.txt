@@ -1,0 +1,1 @@
+Skriv klart metoden vowelCount med test-driven development, dvs. genom att ta fram tester först och sedan skriva koden som får testerna att lyckas. Vad är de största skillnaderna gentemot det traditionella sättet att utveckla ("test-last")? Vilka är fördelarna och nackdelarna? Ungefär hur långa blir dina red-green-refactor-cykler i genomsnitt?
